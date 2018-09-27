@@ -72,6 +72,8 @@
 /* IEEE 802 MAC address octet length */
 #define IEEE_MAC_OCTETS 6
 
+static unsigned char mac_unset[IEEE_MAC_OCTETS] = {BM_OCTET(1,0,0,0,0,0,0,0), 0x00, 0x00, 0x00, 0x00, 0x00};
+
 /* UUID binary representation according to UUID standards */
 typedef struct {
     uuid_uint32_t  time_low;                  /* bits  0-31 of time field */
@@ -967,7 +969,7 @@ static uuid_rc_t uuid_make_v1(uuid_t *uuid, unsigned int mode, va_list ap)
      *  GENERATE NODE
      */
 
-    if ((mode & UUID_MAKE_MC) || (uuid->mac[0] & BM_OCTET(1,0,0,0,0,0,0,0))) {
+    if ((mode & UUID_MAKE_MC) || !memcmp(uuid->mac, mac_unset, IEEE_MAC_OCTETS)) {
         /* generate random IEEE 802 local multicast MAC address */
         if (prng_data(uuid->prng, (void *)&(uuid->obj.node), sizeof(uuid->obj.node)) != PRNG_RC_OK)
             return UUID_RC_INT;

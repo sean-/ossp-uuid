@@ -76,6 +76,9 @@
 #ifdef HAVE_IFADDRS_H
 #include <ifaddrs.h>
 #endif
+#ifdef HAVE_NETPACKET_PACKET_H
+#include <netpacket/packet.h>
+#endif
 
 /* own headers (part (1/2) */
 #include "uuid_mac.h"
@@ -87,6 +90,10 @@
 #define TRUE (/*lint -save -e506*/ !FALSE /*lint -restore*/)
 #endif
 
+#if !defined(min)
+#define min(a,b) ((a) < (b) ? (a) : (b))
+#endif
+
 /* return the Media Access Control (MAC) address of
    the FIRST network interface card (NIC) */
 int mac_address(unsigned char *data_ptr, size_t data_len)
@@ -95,28 +102,41 @@ int mac_address(unsigned char *data_ptr, size_t data_len)
     if (data_ptr == NULL || data_len < MAC_LEN)
         return FALSE;
 
-#if defined(HAVE_IFADDRS_H) && defined(HAVE_NET_IF_DL_H) && defined(HAVE_GETIFADDRS)
+#if defined(HAVE_IFADDRS_H) && (defined(HAVE_NET_IF_DL_H) || defined(HAVE_NETPACKET_PACKET_H)) && defined(HAVE_GETIFADDRS)
     /* use getifaddrs(3) on BSD class platforms (xxxBSD, MacOS X, etc) */
     {
         struct ifaddrs *ifap;
         struct ifaddrs *ifap_head;
+#if defined(HAVE_NET_IF_DL_H)
         const struct sockaddr_dl *sdl;
         unsigned char *ucp;
-        int i;
+#else
+	const struct sockaddr_ll *sll;
+#endif
 
         if (getifaddrs(&ifap_head) < 0)
             return FALSE;
         for (ifap = ifap_head; ifap != NULL; ifap = ifap->ifa_next) {
+#if defined(HAVE_NET_IF_DL_H)
             if (ifap->ifa_addr != NULL && ifap->ifa_addr->sa_family == AF_LINK) {
                 sdl = (const struct sockaddr_dl *)(void *)ifap->ifa_addr;
                 ucp = (unsigned char *)(sdl->sdl_data + sdl->sdl_nlen);
                 if (sdl->sdl_alen > 0) {
-                    for (i = 0; i < MAC_LEN && i < sdl->sdl_alen; i++, ucp++)
-                        data_ptr[i] = (unsigned char)(*ucp & 0xff);
+                    memcpy(data_ptr, ucp, min(sdl->sdl_alen, MAC_LEN));
                     freeifaddrs(ifap_head);
                     return TRUE;
                 }
             }
+#else
+            if (ifap->ifa_addr != NULL && ifap->ifa_addr->sa_family == AF_PACKET) {
+                sll = (const struct sockaddr_ll *)(void *)ifap->ifa_addr;
+                if (sll->sll_hatype == ARPHRD_ETHER) {
+                    memcpy(data_ptr, sll->sll_addr, min(sll->sll_halen, MAC_LEN));
+                    freeifaddrs(ifap_head);
+                    return TRUE;
+                }
+            }
+#endif
         }
         freeifaddrs(ifap_head);
     }

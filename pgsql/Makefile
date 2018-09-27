@@ -16,15 +16,16 @@ PG_CONFIG         ?= pg_config
 PGXS              := $(shell $(PG_CONFIG) --pgxs)
 POSTGRES          := $(shell $(PG_CONFIG) --bindir)/postgres
 top_builddir      := $(dir $(PGXS))../..
+mkinstalldirs     = ../shtool mkdir -p
 include           $(top_builddir)/src/Makefile.global
     
-NAME              = uuid
+NAME              = ossp-uuid
 OBJS              = uuid.o
 SO_MAJOR_VERSION  = 1
 SO_MINOR_VERSION  = 0
 
 override CPPFLAGS := -I.. $(CPPFLAGS)
-SHLIB_LINK        := -L../.libs -luuid
+SHLIB_LINK        := -L../.libs -lossp-uuid
 SHLIB_LINK        += $(shell test $(shell uname -s) = FreeBSD && echo "-Wl,-Bsymbolic")
 SHLIB_LINK        += $(shell test $(shell uname -s) = Darwin && echo "-bundle_loader $(POSTGRES)")
 rpath             :=
@@ -35,16 +36,16 @@ enable_shared     = yes
 include           $(top_builddir)/src/Makefile.shlib
 
 uuid.sql: uuid.sql.in
-	sed -e 's;MODULE_PATHNAME;$(DESTDIR)$(pkglibdir)/uuid$(DLSUFFIX);g' <uuid.sql.in >uuid.sql
+	sed -e 's;MODULE_PATHNAME;$(DESTDIR)$(pkglibdir)/ossp-uuid$(DLSUFFIX);g' <uuid.sql.in >uuid.sql
 
 install: all
 	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
 	$(mkinstalldirs) $(DESTDIR)$(datadir)
-	$(INSTALL_SHLIB) $(shlib) $(DESTDIR)$(pkglibdir)/uuid$(DLSUFFIX)
+	$(INSTALL_SHLIB) $(shlib) $(DESTDIR)$(pkglibdir)/ossp-uuid$(DLSUFFIX)
 	$(INSTALL_DATA) uuid.sql $(DESTDIR)$(datadir)/uuid.sql
 
 uninstall:
-	-rm -f $(DESTDIR)$(pkglibdir)/uuid$(DLSUFFIX)
+	-rm -f $(DESTDIR)$(pkglibdir)/ossp-uuid$(DLSUFFIX)
 	-rm -f $(DESTDIR)$(datadir)/uuid.sql
 
 clean distclean: clean-lib

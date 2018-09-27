@@ -34,7 +34,7 @@ if test "$PHP_UUID" != "no"; then
     PHP_NEW_EXTENSION(uuid, uuid.c, $ext_shared)
     AC_DEFINE(HAVE_UUID, 1, [Have OSSP uuid library])
     PHP_ADD_LIBPATH([..], )
-    PHP_ADD_LIBRARY([uuid],, UUID_SHARED_LIBADD)
+    PHP_ADD_LIBRARY([ossp-uuid],, UUID_SHARED_LIBADD)
     PHP_ADD_INCLUDE([..])
     PHP_SUBST(UUID_SHARED_LIBADD)
 

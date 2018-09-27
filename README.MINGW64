@@ -1,0 +1,42 @@
+
+below found by search
+https://rpmfind.net/linux/rpm2html/search.php?query=uuid-devel&submit=Search+...&system=&arch=
+
+setup MSYS2
+installed MSYS2
+
+from page
+https://rpmfind.net/linux/RPM/fedora/devel/rawhide/aarch64/u/uuid-devel-1.6.2-41.fc29.aarch64.html
+
+original found on page
+http://www.ossp.org/pkg/lib/uuid/
+
+patched linux binary found on page
+https://rpmfind.net/linux/fedora/linux/development/rawhide/Everything/aarch64/os/Packages/u/uuid-devel-1.6.2-41.fc29.aarch64.rpm
+
+patch source files found on page
+https://download.fedoraproject.org/pub/fedora/linux/development/rawhide/Everything/source/tree/Packages/u/uuid-1.6.2-41.fc29.src.rpm
+
+from reading
+uuid-1.6.2-41.fc29.src/uuid.spec
+applied patches in the following order
+compiled in the following order
+
+cd  /c/ossp-uuid
+patch -p1 < /c/ossp-uuid/patches/uuid-devel-1.6.2-41.fc29.aarch64/uuid-1.6.2-41.fc29.src/uuid-1.6.1-ossp.patch
+patch -p1 < /c/ossp-uuid/patches/uuid-devel-1.6.2-41.fc29.aarch64/uuid-1.6.2-41.fc29.src/uuid-1.6.1-mkdir.patch
+patch -p1 < /c/ossp-uuid/patches/uuid-devel-1.6.2-41.fc29.aarch64/uuid-1.6.2-41.fc29.src/uuid-1.6.2-php54.patch
+patch -p1 < /c/ossp-uuid/patches/uuid-devel-1.6.2-41.fc29.aarch64/uuid-1.6.2-41.fc29.src/uuid-1.6.2-hwaddr.patch
+patch -p1 < /c/ossp-uuid/patches/uuid-devel-1.6.2-41.fc29.aarch64/uuid-1.6.2-41.fc29.src/uuid-1.6.2-nostrip.patch
+patch -p1 < /c/ossp-uuid/patches/uuid-devel-1.6.2-41.fc29.aarch64/uuid-1.6.2-41.fc29.src/uuid-1.6.2-manfix.patch
+patch -p1 < /c/ossp-uuid/patches/uuid-devel-1.6.2-41.fc29.aarch64/uuid-1.6.2-41.fc29.src/uuid-aarch64.patch
+/c/ossp-uuid/configure  --build=x86_64-w64-mingw32 --prefix=$PWD/dist --enable-shared --enable-static
+make LDFLAGS=-shared
+make install
+gcc -shared -o ossp-uuid.dll .libs/*.o -fpic  -Wl,--no-undefined -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc
+pexports ossp-uuid.dll > ossp-uuid.def
+dlltool --dllname ossp-uuid.dll --def ossp-uuid.def --output-lib libossp-uuid.dll.a 
+cp -p ossp-uuid.dll      $PWD/dist/bin
+cp -p ossp-uuid.def      $PWD/dist/bin
+cp -p libossp-uuid.dll.a $PWD/dist/lib
+

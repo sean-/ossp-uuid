@@ -34,9 +34,9 @@
 
 $php_version = $argv[1];
 
-print "++ loading DSO uuid.so (low-level API)\n";
+print "++ loading DSO ossp-uuid.so (low-level API)\n";
 if (!extension_loaded('uuid')) {
-    dl('modules/uuid.so');
+    dl('modules/ossp-uuid.so');
 }
 
 print "++ loading PHP uuid.php${php_version} (high-level API)\n";
