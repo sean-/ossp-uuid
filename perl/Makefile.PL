@@ -33,9 +33,9 @@ use Config;
 use ExtUtils::MakeMaker;
 
 #   determine source directory
-my ($srcdir) = map { my $d = $_; $d =~ s/\/libuuid\.la$//; $d }
-               grep { -f $_ } ("../libuuid.la", glob("../*/libuuid.la"))
-    or die "no source directory found (where libuuid.la is located)";
+my ($srcdir) = map { my $d = $_; $d =~ s/\/libossp-uuid\.la$//; $d }
+               grep { -f $_ } ("../libossp-uuid.la", glob("../*/libossp-uuid.la"))
+    or die "no source directory found (where libossp-uuid.la is located)";
 
 #   determine extra build options
 my $compat = 0;
@@ -47,7 +47,7 @@ WriteMakefile(
     VERSION_FROM      => 'uuid.pm',
     ABSTRACT_FROM     => 'uuid.pod',
     PREREQ_PM         => {},
-    LIBS              => [ "-L$srcdir/.libs -L$srcdir -luuid" ],
+    LIBS              => [ "-L$srcdir/.libs -L$srcdir -lossp-uuid" ],
     DEFINE            => '',
     INC               => "-I. -I$srcdir",
     PM                => { 'uuid.pm'   => '$(INST_LIBDIR)/uuid.pm',

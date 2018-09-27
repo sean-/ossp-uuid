@@ -62,13 +62,13 @@ PERL        = @PERL@
 PHP         = @PHP@
 PG_CONFIG   = @PG_CONFIG@
 
-LIB_NAME    = libuuid.la
+LIB_NAME    = libossp-uuid.la
 LIB_OBJS    = uuid.lo uuid_md5.lo uuid_sha1.lo uuid_prng.lo uuid_mac.lo uuid_time.lo uuid_ui64.lo uuid_ui128.lo uuid_str.lo
 
-DCE_NAME    = libuuid_dce.la
+DCE_NAME    = libossp-uuid_dce.la
 DCE_OBJS    = uuid_dce.lo $(LIB_OBJS)
 
-CXX_NAME    = libuuid++.la
+CXX_NAME    = libossp-uuid++.la
 CXX_OBJS    = uuid++.lo $(LIB_OBJS)
 
 PRG_NAME    = uuid
@@ -79,10 +79,10 @@ MAN_NAME    = uuid.3 uuid++.3 uuid.1
 PERL_NAME   = $(S)/perl/blib/lib/OSSP/uuid.pm
 PERL_OBJS   = $(S)/perl/uuid.pm
 
-PHP_NAME    = $(S)/php/modules/uuid.so
+PHP_NAME    = $(S)/php/modules/ossp-uuid.so
 PHP_OBJS    = $(S)/php/uuid.c
 
-PGSQL_NAME  = $(S)/pgsql/libuuid.so
+PGSQL_NAME  = $(S)/pgsql/libossp-uuid.so
 PGSQL_OBJS  = $(S)/pgsql/uuid.c
 
 TARGETS     = $(LIB_NAME) @DCE_NAME@ @CXX_NAME@ $(PRG_NAME) @PERL_NAME@ @PHP_NAME@ @PGSQL_NAME@
@@ -231,7 +231,7 @@ install:
 	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(mandir)/man1
 	$(SHTOOL) install -c -m 755 uuid-config $(DESTDIR)$(bindir)/
 	$(SHTOOL) install -c -m 644 $(S)/uuid-config.1 $(DESTDIR)$(mandir)/man1/
-	$(SHTOOL) install -c -m 644 $(S)/uuid.pc $(DESTDIR)$(libdir)/pkgconfig/
+	$(SHTOOL) install -c -m 644 $(S)/uuid.pc $(DESTDIR)$(libdir)/pkgconfig/ossp-uuid.pc
 	$(SHTOOL) install -c -m 644 uuid.h $(DESTDIR)$(includedir)/
 	-@if [ ".$(WITH_DCE)" = .yes ]; then \
 	    echo "$(SHTOOL) install -c -m 644 $(S)/uuid_dce.h $(DESTDIR)$(includedir)/"; \
@@ -241,7 +241,7 @@ install:
 	    echo "$(SHTOOL) install -c -m 644 $(S)/uuid++.hh $(DESTDIR)$(includedir)/"; \
 	    $(SHTOOL) install -c -m 644 $(S)/uuid++.hh $(DESTDIR)$(includedir)/; \
 	fi
-	$(SHTOOL) install -c -m 644 $(S)/uuid.3 $(DESTDIR)$(mandir)/man3/
+	$(SHTOOL) install -c -m 644 $(S)/uuid.3 $(DESTDIR)$(mandir)/man3/ossp-uuid.3
 	-@if [ ".$(WITH_CXX)" = .yes ]; then \
 	    echo "$(SHTOOL) install -c -m 644 $(S)/uuid++.3 $(DESTDIR)$(mandir)/man3/"; \
 	    $(SHTOOL) install -c -m 644 $(S)/uuid++.3 $(DESTDIR)$(mandir)/man3/; \
@@ -253,7 +253,7 @@ install:
 	-@if [ ".$(WITH_CXX)" = .yes ]; then \
 	    $(LIBTOOL) --mode=install $(SHTOOL) install -c -m 644 $(CXX_NAME) $(DESTDIR)$(libdir)/; \
 	fi
-	@$(LIBTOOL) --mode=install $(SHTOOL) install -c -s -m 755 uuid $(DESTDIR)$(bindir)/
+	@$(LIBTOOL) --mode=install $(SHTOOL) install -c -m 755 uuid $(DESTDIR)$(bindir)/
 	$(SHTOOL) install -c -m 644 $(S)/uuid.1 $(DESTDIR)$(mandir)/man1/
 	-@if [ ".$(WITH_PERL)" = .yes ]; then \
 	    (cd $(S)/perl && $(MAKE) $(MFLAGS) install DESTDIR=$(DESTDIR)); \
@@ -276,7 +276,7 @@ uninstall:
 	-@if [ ".$(WITH_CXX)" = .yes ]; then \
 	    $(LIBTOOL) --mode=uninstall $(RM) $(DESTDIR)$(libdir)/$(CXX_NAME); \
 	fi
-	-$(RM) $(DESTDIR)$(mandir)/man3/uuid.3
+	-$(RM) $(DESTDIR)$(mandir)/man3/ossp-uuid.3
 	-@if [ ".$(WITH_CXX)" = .yes ]; then \
 	    echo "$(RM) $(DESTDIR)$(mandir)/man3/uuid++.3"; \
 	    $(RM) $(DESTDIR)$(mandir)/man3/uuid++.3; \
@@ -290,7 +290,7 @@ uninstall:
 	    echo "$(RM) $(DESTDIR)$(includedir)/uuid++.hh"; \
 	    $(RM) $(DESTDIR)$(includedir)/uuid++.hh; \
 	fi
-	-$(RM) $(DESTDIR)$(libdir)/pkgconfig/uuid.pc
+	-$(RM) $(DESTDIR)$(libdir)/pkgconfig/ossp-uuid.pc
 	-$(RM) $(DESTDIR)$(mandir)/man1/uuid-config.1
 	-$(RM) $(DESTDIR)$(bindir)/uuid-config
 	-$(RMDIR) $(DESTDIR)$(mandir)/man1 >/dev/null 2>&1 || $(TRUE)

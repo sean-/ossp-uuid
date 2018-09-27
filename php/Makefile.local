@@ -48,7 +48,7 @@ install: build
 	@version=`$(PHP)-config --version | sed -e 's;^\([0-9]\).*$$;\1;'`; extdir="$(EXTDIR)"; \
 	echo "installing PHP$$version API into $$extdir"; \
 	./build/shtool mkdir -f -p -m 755 $(DESTDIR)$$extdir; \
-	./build/shtool install -c -m 755 modules/uuid.so $(DESTDIR)$$extdir/uuid.so; \
+	./build/shtool install -c -m 755 modules/uuid.so $(DESTDIR)$$extdir/ossp-uuid.so; \
 	./build/shtool install -c -m 644 uuid.php$$version $(DESTDIR)$$extdir/uuid.php
 
 clean:
